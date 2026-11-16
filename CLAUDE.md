@@ -1,0 +1,23 @@
+# ZFA Lern-App
+
+Lern-App für Lina (Ausbildung Zahnmedizinische Fachangestellte). Lina ist keine Programmiererin; Patrick (GitHub: over-code) hilft mit. Erklärungen für Lina einfach halten.
+
+## Aufbau
+
+- Eine einzige Datei `index.html` (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt.
+- Muss per Doppelklick und über GitHub Pages laufen. Kein Framework einführen, ohne zu fragen.
+- Mobile-first: Lina lernt hauptsächlich am Handy.
+- Inhalte liegen als Daten im Script: `TOPICS` (learn/cards/quiz), `CASES`, `RATES`. Neue Themen dort ergänzen, die Views bauen sich daraus.
+- Fortschritt in `localStorage` (Präfix `zfaWi_`), immer in try/catch.
+
+## Inhaltliche Regeln
+
+- Sprache: Deutsch, freundlich, duzen.
+- Jedes Thema erklärt zuerst das "Warum" (Box `why`), dann Stoff, dann Prüfungsfallen (Box `trap`) und Eselsbrücken (Box `tip`).
+- Keine Gedankenstriche (—) in Texten.
+- Fachlich korrekt bleiben (BGB-Paragraphen etc. prüfen). Sozialversicherungs- und Steuersätze ändern sich jährlich: im Rechentrainer nur als Beispielwerte kennzeichnen.
+- Jede Quizfrage hat eine Erklärung (`w`), warum die Antwort stimmt.
+
+## Prüfen
+
+Nach Änderungen das Script auf Syntaxfehler prüfen (z. B. Script-Teil extrahieren und `node --check`).

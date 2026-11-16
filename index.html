@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wirtschaft für ZFA: Lern-App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f3ee; --card:#ffffff; --ink:#1f2a2e; --muted:#66737a; --line:#e4ded4;
+  --teal:#0f766e; --teal-soft:#d9efec; --coral:#e2614b; --coral-soft:#fbe3de;
+  --gold:#c88a12; --gold-soft:#f7ecd2; --ok:#15803d; --ok-soft:#dcf2e3; --bad:#b42318; --bad-soft:#fde4e1;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Outfit,system-ui,sans-serif;font-size:17px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.2;margin:0 0 .5em}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 110px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+header.top h1{font-size:1.5rem;margin:0}
+header.top .sub{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--teal-soft);color:var(--teal);font-weight:600;font-size:.8rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.muted{color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:0 -16px 14px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.9rem;font-weight:500}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:14px;font-weight:600;background:var(--teal);color:#fff;min-height:48px}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.coral{background:var(--coral)}
+.btn.full{width:100%}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+
+/* topic list */
+.topic{display:flex;align-items:center;gap:14px;width:100%;text-align:left}
+.topic .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;flex:none;background:var(--teal-soft)}
+.topic .t{font-weight:600}
+.topic .s{font-size:.85rem;color:var(--muted)}
+.topic .arrow{margin-left:auto;color:var(--muted);font-size:1.2rem}
+.bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:var(--teal);width:0;transition:width .4s}
+
+/* lesson content */
+.lesson h2{font-size:1.35rem}
+.lesson h3{font-size:1.05rem;margin-top:1.2em;font-family:Outfit,sans-serif;font-weight:700}
+.lesson ul{padding-left:1.2em;margin:.4em 0}
+.lesson li{margin:.3em 0}
+.box{border-radius:14px;padding:12px 14px;margin:12px 0;font-size:.95rem}
+.box.why{background:var(--gold-soft)}
+.box.tip{background:var(--teal-soft)}
+.box.trap{background:var(--coral-soft)}
+.box b.lbl{display:block;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin:10px 0}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--teal);font-weight:600;margin-bottom:12px;padding:6px 0}
+
+/* flashcards */
+.flip{perspective:1200px;height:300px;margin-bottom:14px}
+.flip .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.turned .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:24px;display:flex;flex-direction:column;justify-content:center;text-align:center;border:1px solid var(--line);background:var(--card);overflow:auto}
+.face.backside{transform:rotateY(180deg);background:var(--teal);color:#fff;border-color:var(--teal)}
+.face .q{font-family:Fraunces,serif;font-size:1.3rem}
+.face .a{font-size:1.05rem}
+.face .hint{position:absolute;bottom:12px;left:0;right:0;font-size:.8rem;opacity:.6}
+.face .tag{position:absolute;top:14px;left:0;right:0;font-size:.75rem;opacity:.65;text-transform:uppercase;letter-spacing:.06em}
+
+/* quiz */
+.opt{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);margin-bottom:10px;font-weight:500}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.85rem;color:var(--muted)}
+.qtext{font-family:Fraunces,serif;font-size:1.25rem;margin-bottom:16px}
+.explain{border-radius:14px;padding:12px 14px;margin:6px 0 14px;font-size:.95rem}
+.explain.ok{background:var(--ok-soft)}
+.explain.no{background:var(--bad-soft)}
+.big{font-family:Fraunces,serif;font-size:3rem;text-align:center;margin:10px 0}
+
+/* calc */
+.calc-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:.95rem}
+.calc-line.sum{font-weight:700;border-bottom:2px solid var(--ink)}
+input.num{width:100%;font:inherit;font-size:1.2rem;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:#fff}
+input.num:focus{outline:none;border-color:var(--teal)}
+label.lbl{font-weight:600;display:block;margin:10px 0 6px}
+
+/* nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{display:flex;max-width:680px;width:100%}
+nav.tabs button{flex:1;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;color:var(--muted);font-weight:600}
+nav.tabs button .i{font-size:1.3rem;line-height:1}
+nav.tabs button.on{color:var(--teal)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-family:Fraunces,serif;font-size:1.5rem}
+.stat span{font-size:.75rem;color:var(--muted)}
+.fade{animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<nav class="tabs"><div class="in" id="tabs"></div></nav>
+
+<script>
+/* ============ INHALT ============ */
+const TOPICS = [
+{
+ id:"gehalt", ico:"💶", title:"Gehaltsabrechnung", sub:"Vom Brutto zum Netto",
+ learn:`
+<h2>💶 Gehaltsabrechnung</h2>
+<div class="box why"><b class="lbl">Warum gibt es das?</b>Der Staat und die Sozialversicherungen holen sich ihr Geld direkt an der Quelle. Dein Arbeitgeber zieht Steuern und Beiträge vom Lohn ab und überweist sie. Deshalb kommt bei dir weniger an, als im Vertrag steht.</div>
+<h3>Der Weg in 3 Schritten</h3>
+<table>
+<tr><td><b>Brutto</b></td><td>Das vereinbarte Gehalt (bzw. die Ausbildungsvergütung)</td></tr>
+<tr><td>− Steuern</td><td>Lohnsteuer, Kirchensteuer (nur Kirchenmitglieder), Soli (nur Gutverdiener)</td></tr>
+<tr><td>− Sozialversicherung</td><td>dein Anteil an KV, RV, AV, PV</td></tr>
+<tr><td><b>= Netto</b></td><td>Was dir gehört</td></tr>
+<tr><td>− sonstige Abzüge</td><td>z. B. VL (vermögenswirksame Leistungen)</td></tr>
+<tr><td><b>= Auszahlung</b></td><td>Was wirklich auf dem Konto landet</td></tr>
+</table>
+<h3>Die Steuern</h3>
+<ul>
+<li><b>Lohnsteuer:</b> hängt von Gehalt und Steuerklasse ab (steht in der Lohnsteuertabelle)</li>
+<li><b>Kirchensteuer:</b> nur wer in der Kirche ist. Wird als Prozentsatz <i>von der Lohnsteuer</i> berechnet (in Niedersachsen 9 %)</li>
+<li><b>Solidaritätszuschlag:</b> zahlen heute nur noch Gutverdiener</li>
+</ul>
+<h3>Die Sozialversicherung (SV)</h3>
+<p>Merkwort: <b>K-R-A-P</b></p>
+<ul>
+<li><b>K</b>rankenversicherung</li>
+<li><b>R</b>entenversicherung</li>
+<li><b>A</b>rbeitslosenversicherung</li>
+<li><b>P</b>flegeversicherung</li>
+</ul>
+<p>Die Beiträge teilen sich Arbeitnehmer und Arbeitgeber <b>ungefähr je zur Hälfte</b>.</p>
+<div class="box trap"><b class="lbl">Prüfungsfalle</b>Kinderlose ab 23 Jahren zahlen in der Pflegeversicherung einen <b>Zuschlag</b>. Den zahlt der Arbeitnehmer allein.</div>
+<div class="box tip"><b class="lbl">Extra-Wissen</b>Die 5. Sozialversicherung, die <b>Unfallversicherung</b> (Berufsgenossenschaft), zahlt der Arbeitgeber komplett allein. Darum taucht sie auf deiner Abrechnung nicht als Abzug auf.</div>
+<h3>Netto vs. Auszahlungsbetrag</h3>
+<p>Netto = Brutto minus Steuern minus SV. Wird danach noch etwas abgezogen (z. B. der VL-Sparbetrag), heißt das, was übrig bleibt, <b>Auszahlungsbetrag</b>.</p>
+<div class="box trap"><b class="lbl">Wichtig</b>Die Prozentsätze ändern sich jedes Jahr. In der Prüfung immer die Werte aus der Aufgabe bzw. deinen Schulunterlagen nehmen!</div>
+<p class="muted">👉 Im Tab <b>Rechnen</b> kannst du das üben.</p>`,
+ cards:[
+  ["Welche Steuern werden vom Brutto abgezogen?","Lohnsteuer, Kirchensteuer (nur Kirchenmitglieder) und Soli (nur Gutverdiener)"],
+  ["Welche 4 Sozialversicherungen siehst du auf der Abrechnung?","Kranken-, Renten-, Arbeitslosen- und Pflegeversicherung (K-R-A-P)"],
+  ["Wer zahlt die Sozialversicherung?","Arbeitnehmer und Arbeitgeber, ungefähr je zur Hälfte"],
+  ["Wer zahlt den Kinderlosenzuschlag zur Pflegeversicherung?","Kinderlose ab 23 Jahren, und zwar allein (ohne Arbeitgeberanteil)"],
+  ["Wovon wird die Kirchensteuer berechnet?","Von der Lohnsteuer (in Niedersachsen 9 % davon)"],
+  ["Was ist der Unterschied zwischen Netto und Auszahlungsbetrag?","Netto = Brutto − Steuern − SV. Auszahlung = Netto − weitere Abzüge (z. B. VL)"],
+  ["Was bedeutet VL?","Vermögenswirksame Leistungen: Sparbetrag, der vom Netto abgezogen und angelegt wird"],
+  ["Wer zahlt die Unfallversicherung?","Nur der Arbeitgeber"]
+ ],
+ quiz:[
+  {q:"Was wird NICHT vom Bruttogehalt abgezogen?",o:["Lohnsteuer","Rentenversicherung","Unfallversicherung","Pflegeversicherung"],a:2,w:"Die Unfallversicherung zahlt der Arbeitgeber allein. Sie taucht nicht als Abzug beim Arbeitnehmer auf."},
+  {q:"Wie wird die Kirchensteuer berechnet?",o:["Als Prozentsatz vom Brutto","Als Prozentsatz von der Lohnsteuer","Als fester Betrag pro Monat","Als Prozentsatz vom Netto"],a:1,w:"Kirchensteuer = Prozentsatz der Lohnsteuer (in Niedersachsen 9 %)."},
+  {q:"Wer zahlt heute noch den Solidaritätszuschlag?",o:["Alle Arbeitnehmer","Nur Kirchenmitglieder","Nur Gutverdiener","Nur Arbeitgeber"],a:2,w:"Seit 2021 zahlen ihn nur noch Gutverdiener. Für normale Gehälter und Azubis fällt er weg."},
+  {q:"Lina ist 24 und hat keine Kinder. Was gilt für sie?",o:["Sie zahlt keine Pflegeversicherung","Sie zahlt einen Zuschlag zur Pflegeversicherung","Der Arbeitgeber zahlt ihren Zuschlag","Sie zahlt mehr Rentenversicherung"],a:1,w:"Kinderlose ab 23 zahlen einen Zuschlag zur Pflegeversicherung, und den allein."},
+  {q:"Was bleibt übrig, wenn man vom Netto noch die VL abzieht?",o:["Brutto","Auszahlungsbetrag","Steuerbrutto","Arbeitgeberanteil"],a:1,w:"Netto minus weitere Abzüge (z. B. VL) = Auszahlungsbetrag."},
+  {q:"Wie werden die Beiträge zur Sozialversicherung grob verteilt?",o:["Arbeitnehmer zahlt alles","Arbeitgeber zahlt alles","Ungefähr je zur Hälfte","Der Staat zahlt die Hälfte"],a:2,w:"Arbeitnehmer und Arbeitgeber teilen sich die Beiträge ungefähr je zur Hälfte."}
+ ]
+},
+{
+ id:"vertrag", ico:"📝", title:"Arbeitsvertrag", sub:"Form, Pflichten, Kündigung",
+ learn:`
+<h2>📝 Arbeitsvertrag</h2>
+<div class="box why"><b class="lbl">Warum ist das wichtig?</b>Der Arbeitsvertrag regelt, was du tun musst und was du dafür bekommst. Damit es später keinen Streit gibt, muss das Wichtigste schriftlich festgehalten werden.</div>
+<h3>Welche Form braucht der Vertrag?</h3>
+<ul>
+<li>Der Arbeitsvertrag selbst ist <b>formfrei</b>. Er gilt sogar, wenn er nur mündlich geschlossen wurde.</li>
+<li>Aber: Der Arbeitgeber muss die <b>wesentlichen Bedingungen schriftlich festhalten</b> und dir geben. Das regelt das <b>Nachweisgesetz</b>.</li>
+</ul>
+<p>Wesentliche Bedingungen sind z. B.: Name der Vertragspartner, Beginn, Arbeitsort, Tätigkeit, Gehalt, Arbeitszeit, Urlaub, Kündigungsfristen.</p>
+<h3>Was MUSS schriftlich sein?</h3>
+<ul>
+<li><b>Befristung</b> (z. B. „Vertrag läuft bis 31.12.“)</li>
+<li><b>Kündigung</b> (per WhatsApp oder E-Mail ist sie unwirksam!)</li>
+</ul>
+<div class="box trap"><b class="lbl">Prüfungsfalle</b>Wird eine Befristung nur mündlich vereinbart, ist die Befristung unwirksam. Dann gilt der Vertrag als <b>unbefristet</b>.</div>
+<h3>Pflichten</h3>
+<table>
+<tr><th>Arbeitnehmer</th><th>Arbeitgeber</th></tr>
+<tr><td>Arbeitspflicht (arbeiten)</td><td>Lohn zahlen</td></tr>
+<tr><td>Treuepflicht (dem Betrieb nicht schaden)</td><td>Fürsorgepflicht (z. B. Gesundheitsschutz)</td></tr>
+<tr><td>Verschwiegenheit (Betriebs- und Patientengeheimnisse)</td><td>Urlaub gewähren</td></tr>
+<tr><td></td><td>Zeugnis ausstellen</td></tr>
+</table>
+<div class="box tip"><b class="lbl">Eselsbrücke</b>Die Pflicht des einen ist das Recht des anderen. Du musst arbeiten, also hat der Chef ein Recht auf deine Arbeit. Er muss zahlen, also hast du ein Recht auf Lohn.</div>
+<div class="box tip"><b class="lbl">Für die Praxis</b>Gerade in der Zahnarztpraxis ist Verschwiegenheit extrem wichtig: Alles über Patienten bleibt in der Praxis.</div>`,
+ cards:[
+  ["Braucht ein Arbeitsvertrag eine bestimmte Form?","Nein, er ist formfrei (auch mündlich gültig). Die wesentlichen Bedingungen muss der Arbeitgeber aber schriftlich festhalten."],
+  ["Welches Gesetz verlangt, dass die Arbeitsbedingungen schriftlich festgehalten werden?","Das Nachweisgesetz"],
+  ["Welche 2 Dinge müssen beim Arbeitsverhältnis immer schriftlich sein?","Eine Befristung und die Kündigung"],
+  ["Was passiert, wenn eine Befristung nur mündlich vereinbart wurde?","Die Befristung ist unwirksam, der Vertrag gilt als unbefristet"],
+  ["Nenne die 3 Pflichten des Arbeitnehmers.","Arbeitspflicht, Treuepflicht, Verschwiegenheitspflicht"],
+  ["Nenne die 4 Pflichten des Arbeitgebers.","Lohn zahlen, Fürsorge, Urlaub gewähren, Zeugnis ausstellen"]
+ ],
+ quiz:[
+  {q:"Ein Arbeitsvertrag wurde nur mündlich geschlossen. Ist er gültig?",o:["Nein, er ist nichtig","Ja, der Vertrag ist formfrei","Nur mit Zeugen","Nur bei Minijobs"],a:1,w:"Der Arbeitsvertrag ist formfrei. Der Arbeitgeber muss die Bedingungen aber nach dem Nachweisgesetz schriftlich festhalten."},
+  {q:"Was muss zwingend schriftlich erfolgen?",o:["Die Urlaubsplanung","Die Kündigung","Die Probezeit-Absprache","Der Dienstplan"],a:1,w:"Kündigung und Befristung müssen schriftlich sein. Eine Kündigung per WhatsApp ist unwirksam."},
+  {q:"Welche Pflicht gehört zum ARBEITGEBER?",o:["Treuepflicht","Verschwiegenheit","Fürsorgepflicht","Arbeitspflicht"],a:2,w:"Fürsorge, Lohn, Urlaub und Zeugnis sind Pflichten des Arbeitgebers."},
+  {q:"Eine ZFA erzählt in der Disco, welcher Promi in der Praxis Patient ist. Welche Pflicht verletzt sie?",o:["Arbeitspflicht","Verschwiegenheitspflicht","Fürsorgepflicht","Zeugnispflicht"],a:1,w:"Patientendaten fallen unter die Verschwiegenheitspflicht."},
+  {q:"Die Befristung wurde nur mündlich abgesprochen. Folge?",o:["Der Vertrag ist nichtig","Der Vertrag gilt als unbefristet","Der Vertrag endet sofort","Nichts, mündlich reicht"],a:1,w:"Ohne Schriftform ist die Befristung unwirksam, das Arbeitsverhältnis gilt als unbefristet."}
+ ]
+},
+{
+ id:"recht", ico:"⚖️", title:"Privates vs. öffentliches Recht", sub:"Gleichgestellt oder Staat oben?",
+ learn:`
+<h2>⚖️ Privates vs. öffentliches Recht</h2>
+<div class="box why"><b class="lbl">Warum die Unterscheidung?</b>Es macht einen großen Unterschied, ob du mit deiner Nachbarin streitest oder ob der Staat dir einen Bußgeldbescheid schickt. Mit der Nachbarin musst du verhandeln. Der Staat kann dir einfach etwas vorschreiben.</div>
+<table>
+<tr><th>Privatrecht</th><th>Öffentliches Recht</th></tr>
+<tr><td>Beide Seiten sind <b>gleichgestellt</b> (Gleichordnung)</td><td>Der <b>Staat steht über dem Bürger</b> (Über-/Unterordnung)</td></tr>
+<tr><td>BGB, HGB</td><td>Strafrecht, Steuerrecht, Sozialrecht</td></tr>
+<tr><td>Kaufvertrag, Mietvertrag, Arbeitsvertrag</td><td>Steuerbescheid, Strafzettel, Führerschein-Entzug</td></tr>
+</table>
+<h3>So erkennst du es</h3>
+<p>Frag dich: <b>Wer steht sich gegenüber?</b></p>
+<ul>
+<li>Zwei Bürger / zwei Firmen / Patient und Praxis → <b>Privatrecht</b></li>
+<li>Staat (Behörde, Finanzamt, Polizei) gegenüber Bürger <b>mit Befehlsgewalt</b> → <b>Öffentliches Recht</b></li>
+</ul>
+<div class="box trap"><b class="lbl">Prüfungsfalle</b>Kauft die Stadt Bremervörde Druckerpapier im Laden, ist das <b>Privatrecht</b>. Hier handelt die Stadt wie ein ganz normaler Kunde. Entscheidend ist, ob der Staat „von oben herab“ bestimmt.</div>
+<div class="box tip"><b class="lbl">Eselsbrücke</b>BGB und HGB = <b>B</b>ürger und <b>H</b>ändler unter sich → privat.</div>`,
+ cards:[
+  ["Was kennzeichnet das Privatrecht?","Beide Seiten sind gleichgestellt (Gleichordnung)"],
+  ["Was kennzeichnet das öffentliche Recht?","Der Staat steht über dem Bürger (Über-/Unterordnung)"],
+  ["Nenne 2 Gesetze aus dem Privatrecht.","BGB (Bürgerliches Gesetzbuch) und HGB (Handelsgesetzbuch)"],
+  ["Nenne 3 Bereiche des öffentlichen Rechts.","Strafrecht, Steuerrecht, Sozialrecht"],
+  ["Ein Patient schließt einen Behandlungsvertrag mit der Praxis. Welches Recht?","Privatrecht (beide gleichgestellt, BGB)"]
+ ],
+ quiz:[
+  {q:"Lina bekommt einen Bußgeldbescheid wegen zu schnellen Fahrens. Welches Recht?",o:["Privatrecht","Öffentliches Recht"],a:1,w:"Der Staat bestimmt über die Bürgerin. Über-/Unterordnung = öffentliches Recht."},
+  {q:"Die Praxis kauft neue Handschuhe beim Dentalhändler. Welches Recht?",o:["Privatrecht","Öffentliches Recht"],a:0,w:"Zwei gleichgestellte Vertragspartner, Kaufvertrag nach BGB/HGB."},
+  {q:"Das Finanzamt schickt einen Steuerbescheid. Welches Recht?",o:["Privatrecht","Öffentliches Recht"],a:1,w:"Steuerrecht gehört zum öffentlichen Recht."},
+  {q:"Welches Gesetz gehört zum Privatrecht?",o:["Strafgesetzbuch","Abgabenordnung","HGB","Sozialgesetzbuch"],a:2,w:"HGB und BGB sind die klassischen Privatrechtsgesetze."},
+  {q:"Die Gemeinde kauft Druckerpapier im Schreibwarenladen. Welches Recht?",o:["Öffentliches Recht, weil die Gemeinde beteiligt ist","Privatrecht, weil die Gemeinde wie ein normaler Kunde handelt"],a:1,w:"Beim normalen Einkauf hat die Gemeinde keine Befehlsgewalt. Beide sind gleichgestellt."}
+ ]
+},
+{
+ id:"quellen", ico:"📚", title:"Rechtsquellen", sub:"Woher kommt das Recht?",
+ learn:`
+<h2>📚 Rechtsquellen</h2>
+<div class="box why"><b class="lbl">Worum geht's?</b>Rechtsquellen beantworten die Frage: <b>Woher kommt eine Regel, an die sich alle halten müssen?</b> Manche Regeln stehen in einem Gesetzbuch, andere haben sich einfach durchgesetzt.</div>
+<h3>Geschriebenes Recht</h3>
+<table>
+<tr><th>Art</th><th>Wer macht es?</th></tr>
+<tr><td><b>Gesetze</b></td><td>das Parlament (Bundestag, Landtag)</td></tr>
+<tr><td><b>Verordnungen</b></td><td>Regierung / Ministerien (auf Grundlage eines Gesetzes)</td></tr>
+<tr><td><b>Satzungen</b></td><td>Gemeinden, Kammern, Körperschaften (z. B. Zahnärztekammer)</td></tr>
+</table>
+<h3>Ungeschriebenes Recht</h3>
+<ul>
+<li><b>Gewohnheitsrecht:</b> Etwas wird lange so gemacht und alle halten es für rechtlich verbindlich. Beispiel: ein Wegerecht über ein Grundstück, das seit Jahrzehnten alle nutzen.</li>
+<li><b>Richterrecht:</b> Urteile hoher Gerichte (z. B. Bundesarbeitsgericht), an denen sich andere Gerichte orientieren.</li>
+</ul>
+<div class="box tip"><b class="lbl">Eselsbrücke</b>Geschrieben = steht in einem <b>Text</b> (Gesetz, Verordnung, Satzung). Ungeschrieben = entsteht durch <b>Gewohnheit</b> oder durch <b>Richter</b>.</div>`,
+ cards:[
+  ["Nenne die 3 Arten von geschriebenem Recht.","Gesetze, Verordnungen, Satzungen"],
+  ["Nenne die 2 Arten von ungeschriebenem Recht.","Gewohnheitsrecht und Richterrecht"],
+  ["Was ist Gewohnheitsrecht?","Eine Regel, die lange praktiziert wird und die alle für verbindlich halten"],
+  ["Was ist Richterrecht?","Rechtsregeln, die durch Urteile hoher Gerichte entstehen"],
+  ["Wer erlässt Satzungen?","Gemeinden, Kammern und andere Körperschaften (z. B. die Zahnärztekammer)"]
+ ],
+ quiz:[
+  {q:"Welche Rechtsquelle gehört zum UNGESCHRIEBENEN Recht?",o:["Verordnung","Satzung","Gewohnheitsrecht","Gesetz"],a:2,w:"Ungeschrieben sind Gewohnheitsrecht und Richterrecht."},
+  {q:"Die Gemeinde regelt die Gebühren für die Müllabfuhr. Welche Rechtsquelle?",o:["Gesetz","Satzung","Richterrecht","Gewohnheitsrecht"],a:1,w:"Gemeinden erlassen Satzungen."},
+  {q:"Das Bundesarbeitsgericht entscheidet einen Grundsatzfall, andere Gerichte folgen dem Urteil. Was entsteht?",o:["Gewohnheitsrecht","Richterrecht","Verordnung","Satzung"],a:1,w:"Urteile hoher Gerichte, an denen sich andere orientieren = Richterrecht."},
+  {q:"Was gehört zum geschriebenen Recht?",o:["Gesetze, Verordnungen, Satzungen","Gesetze, Gewohnheitsrecht, Urteile","Nur Gesetze","Satzungen und Richterrecht"],a:0,w:"Geschrieben: Gesetze, Verordnungen, Satzungen."}
+ ]
+},
+{
+ id:"subjekte", ico:"👥", title:"Rechtssubjekte & -objekte", sub:"Wer hat Rechte, worüber?",
+ learn:`
+<h2>👥 Rechtssubjekte und Rechtsobjekte</h2>
+<div class="box why"><b class="lbl">Die Idee dahinter</b>Im Recht gibt es immer jemanden, der handelt (<b>Subjekt</b>), und etwas, worum es geht (<b>Objekt</b>). Wie im Deutschunterricht: <i>Lina</i> (Subjekt) kauft <i>ein Auto</i> (Objekt).</div>
+<h3>Rechtssubjekte: haben Rechte und Pflichten</h3>
+<ul>
+<li><b>Natürliche Personen</b> = Menschen</li>
+<li><b>Juristische Personen</b> = Organisationen, die das Recht wie eine Person behandelt:
+ <ul>
+ <li>des Privatrechts: GmbH, AG, eingetragener Verein (e.V.)</li>
+ <li>des öffentlichen Rechts: Gemeinde, Kammern (z. B. Zahnärztekammer)</li>
+ </ul></li>
+</ul>
+<h3>Rechtsobjekte: Gegenstände des Rechts</h3>
+<ul>
+<li><b>Sachen</b> (körperliche Gegenstände)
+ <ul>
+ <li>beweglich: Auto, Behandlungsstuhl, Handy</li>
+ <li>unbeweglich (Immobilien): Grundstück, Haus</li>
+ </ul></li>
+<li><b>Rechte</b>: z. B. Patente, Markenrechte, Urheberrechte, Forderungen</li>
+</ul>
+<div class="box trap"><b class="lbl">Prüfungsfalle</b><b>Tiere sind keine Sachen</b> (§ 90a BGB). Sie werden aber rechtlich <b>wie Sachen behandelt</b>. Man kann also einen Hund kaufen.</div>
+<div class="box tip"><b class="lbl">Merke</b>Subjekt = <b>wer</b>. Objekt = <b>was</b>. Ein Mensch ist nie ein Rechtsobjekt.</div>`,
+ cards:[
+  ["Was ist ein Rechtssubjekt?","Jemand, der Rechte und Pflichten haben kann"],
+  ["Welche 2 Arten von Rechtssubjekten gibt es?","Natürliche Personen (Menschen) und juristische Personen (z. B. GmbH, AG, e.V., Gemeinde)"],
+  ["Was sind Rechtsobjekte?","Gegenstände des Rechts: Sachen (beweglich/unbeweglich) und Rechte (z. B. Patente)"],
+  ["Sind Tiere Sachen?","Nein (§ 90a BGB), sie werden aber wie Sachen behandelt"],
+  ["Nenne ein Beispiel für eine unbewegliche Sache.","Grundstück, Haus (Immobilie)"],
+  ["Ist eine Zahnarztpraxis-GmbH ein Rechtssubjekt?","Ja, eine juristische Person des Privatrechts"]
+ ],
+ quiz:[
+  {q:"Was ist eine GmbH?",o:["Natürliche Person","Juristische Person","Rechtsobjekt","Unbewegliche Sache"],a:1,w:"GmbH, AG und e.V. sind juristische Personen."},
+  {q:"Was ist ein Patent?",o:["Rechtssubjekt","Bewegliche Sache","Recht (Rechtsobjekt)","Juristische Person"],a:2,w:"Patente sind Rechte und damit Rechtsobjekte."},
+  {q:"Wie behandelt das Recht Tiere?",o:["Als Sachen","Als Rechtssubjekte","Sie sind keine Sachen, werden aber wie Sachen behandelt","Als juristische Personen"],a:2,w:"§ 90a BGB: Tiere sind keine Sachen, die Vorschriften für Sachen gelten aber entsprechend."},
+  {q:"Was ist ein Einfamilienhaus?",o:["Bewegliche Sache","Unbewegliche Sache","Recht","Rechtssubjekt"],a:1,w:"Grundstücke und Gebäude sind unbewegliche Sachen (Immobilien)."},
+  {q:"Was ist die Gemeinde Stade?",o:["Natürliche Person","Juristische Person","Rechtsobjekt","Gar nichts davon"],a:1,w:"Gemeinden sind juristische Personen des öffentlichen Rechts."}
+ ]
+},
+{
+ id:"besitz", ico:"🔑", title:"Besitz & Eigentum", sub:"Haben vs. gehören",
+ learn:`
+<h2>🔑 Besitz und Eigentum</h2>
+<div class="box why"><b class="lbl">Warum zwei Begriffe?</b>Im Alltag sagen wir „mein Auto“ für beides. Das Recht muss aber unterscheiden: Wer hat die Sache gerade in der Hand, und wem gehört sie wirklich? Das ist z. B. bei Miete, Leihe oder Diebstahl wichtig.</div>
+<table>
+<tr><th>Besitz</th><th>Eigentum</th></tr>
+<tr><td><b>tatsächliche</b> Herrschaft</td><td><b>rechtliche</b> Herrschaft</td></tr>
+<tr><td>Du <b>hast</b> die Sache</td><td>Die Sache <b>gehört</b> dir</td></tr>
+<tr><td>z. B. Mieter, Entleiher</td><td>z. B. Vermieter, Verleiher</td></tr>
+</table>
+<h3>Beispiele</h3>
+<ul>
+<li>Lina mietet eine Wohnung: Lina ist <b>Besitzerin</b>, der Vermieter ist <b>Eigentümer</b>.</li>
+<li>Lina leiht sich das Fahrrad ihrer Freundin: Lina = Besitzerin, Freundin = Eigentümerin.</li>
+<li>Lina kauft ein Handy und benutzt es: Lina ist Besitzerin <b>und</b> Eigentümerin.</li>
+</ul>
+<div class="box trap"><b class="lbl">Prüfungsfalle</b>Auch ein <b>Dieb</b> ist Besitzer (er hat die Sache tatsächlich). Eigentümer wird er aber nie.</div>
+<div class="box tip"><b class="lbl">Eselsbrücke</b><b>Be</b>sitz = drauf <b>sitzen</b>, du hast es bei dir. <b>Eigen</b>tum = es ist dein <b>eigen</b>.</div>`,
+ cards:[
+  ["Was ist Besitz?","Die tatsächliche Herrschaft über eine Sache (man hat sie)"],
+  ["Was ist Eigentum?","Die rechtliche Herrschaft über eine Sache (sie gehört einem)"],
+  ["Mieter: Besitzer oder Eigentümer?","Besitzer"],
+  ["Vermieter: Besitzer oder Eigentümer?","Eigentümer"],
+  ["Ist ein Dieb Besitzer oder Eigentümer?","Besitzer, aber niemals Eigentümer"]
+ ],
+ quiz:[
+  {q:"Lina leiht sich ein Buch aus der Bücherei. Was ist sie?",o:["Eigentümerin","Besitzerin","Beides","Nichts davon"],a:1,w:"Sie hat das Buch tatsächlich, es gehört aber der Bücherei."},
+  {q:"Was beschreibt Eigentum?",o:["Tatsächliche Herrschaft","Rechtliche Herrschaft","Zeitlich begrenzte Nutzung","Nur bei Immobilien"],a:1,w:"Eigentum = rechtliche Herrschaft, die Sache gehört dir."},
+  {q:"Ein Dieb stiehlt ein Fahrrad. Was ist er?",o:["Eigentümer","Besitzer","Beides","Weder noch"],a:1,w:"Er hat die tatsächliche Herrschaft (Besitz), wird aber nie Eigentümer."},
+  {q:"Die Praxis least ein Röntgengerät. Wer ist Eigentümer?",o:["Die Praxis","Die Leasingfirma","Der Patient","Die Zahnärztekammer"],a:1,w:"Die Praxis ist Besitzerin, die Leasingfirma bleibt Eigentümerin."}
+ ]
+},
+{
+ id:"rechtsf", ico:"👶", title:"Rechtsfähigkeit", sub:"Rechte und Pflichten haben",
+ learn:`
+<h2>👶 Rechtsfähigkeit</h2>
+<div class="box why"><b class="lbl">Was heißt das?</b>Rechtsfähigkeit ist die Fähigkeit, <b>Rechte und Pflichten zu haben</b>. Schon ein Baby kann z. B. ein Haus erben. Es kann damit nur noch nichts selbst unterschreiben (das ist dann Geschäftsfähigkeit).</div>
+<table>
+<tr><th>Wer?</th><th>Beginn</th><th>Ende</th></tr>
+<tr><td>Mensch (natürliche Person)</td><td>mit <b>Vollendung der Geburt</b></td><td>mit dem <b>Tod</b></td></tr>
+<tr><td>Juristische Person</td><td>mit der <b>Eintragung</b> (z. B. ins Handelsregister)</td><td>mit der <b>Löschung</b></td></tr>
+</table>
+<p>Rechtsgrundlage für Menschen: <b>§ 1 BGB</b>.</p>
+<div class="box trap"><b class="lbl">Nicht verwechseln</b><b>Rechts</b>fähigkeit = Rechte <b>haben</b> (jeder Mensch ab Geburt).<br><b>Geschäfts</b>fähigkeit = Verträge selbst <b>abschließen</b> (hängt vom Alter ab).</div>
+<div class="box tip"><b class="lbl">Beispiel</b>Ein Neugeborenes erbt von der Oma: Es ist rechtsfähig, also wird es Eigentümer. Die Eltern handeln für das Kind.</div>`,
+ cards:[
+  ["Was ist Rechtsfähigkeit?","Die Fähigkeit, Rechte und Pflichten zu haben"],
+  ["Wann beginnt die Rechtsfähigkeit eines Menschen?","Mit der Vollendung der Geburt (§ 1 BGB)"],
+  ["Wann endet die Rechtsfähigkeit eines Menschen?","Mit dem Tod"],
+  ["Wann ist eine GmbH rechtsfähig?","Von der Eintragung (Handelsregister) bis zur Löschung"],
+  ["Unterschied Rechtsfähigkeit / Geschäftsfähigkeit?","Rechtsfähig = Rechte haben. Geschäftsfähig = Verträge selbst wirksam abschließen."]
+ ],
+ quiz:[
+  {q:"Ab wann ist ein Mensch rechtsfähig?",o:["Ab 7 Jahren","Ab 18 Jahren","Mit Vollendung der Geburt","Ab der Einschulung"],a:2,w:"§ 1 BGB: Die Rechtsfähigkeit beginnt mit der Vollendung der Geburt."},
+  {q:"Kann ein 2 Monate altes Baby ein Haus erben?",o:["Ja, es ist rechtsfähig","Nein, es ist nicht geschäftsfähig","Erst ab 7","Nur mit Gerichtsbeschluss"],a:0,w:"Erben ist eine Frage der Rechtsfähigkeit, und die hat jeder Mensch ab Geburt."},
+  {q:"Wann endet die Rechtsfähigkeit einer GmbH?",o:["Mit dem Tod des Geschäftsführers","Mit der Löschung aus dem Register","Nach 30 Jahren","Bei Insolvenz automatisch"],a:1,w:"Juristische Personen: von der Eintragung bis zur Löschung."},
+  {q:"In welchem Paragraphen steht die Rechtsfähigkeit des Menschen?",o:["§ 1 BGB","§ 110 BGB","§ 113 BGB","§ 90a BGB"],a:0,w:"§ 1 BGB."}
+ ]
+},
+{
+ id:"geschf", ico:"🧒", title:"Geschäftsfähigkeit", sub:"Wer darf Verträge schließen?",
+ learn:`
+<h2>🧒 Geschäftsfähigkeit</h2>
+<div class="box why"><b class="lbl">Warum gibt es Altersstufen?</b>Kinder sollen vor schlechten Geschäften geschützt werden. Ein 8-Jähriger soll nicht einfach einen Handyvertrag für 50 € im Monat abschließen können. Darum entscheidet das Alter, wie viel man selbst darf.</div>
+<table>
+<tr><th>Alter</th><th>Stufe</th><th>Folge für den Vertrag</th></tr>
+<tr><td>0–6</td><td><b>geschäftsunfähig</b></td><td>Vertrag ist <b>nichtig</b> (von Anfang an ungültig)</td></tr>
+<tr><td>7–17</td><td><b>beschränkt geschäftsfähig</b></td><td>Vertrag ist <b>schwebend unwirksam</b>, bis die Eltern zustimmen</td></tr>
+<tr><td>ab 18</td><td><b>voll geschäftsfähig</b></td><td>Vertrag ist <b>wirksam</b></td></tr>
+</table>
+<h3>Was heißt „schwebend unwirksam“?</h3>
+<p>Der Vertrag „schwebt“ in der Luft. Er ist noch nicht gültig, aber auch noch nicht kaputt.</p>
+<ul>
+<li>Eltern <b>genehmigen</b> → Vertrag wird wirksam</li>
+<li>Eltern <b>lehnen ab</b> → Vertrag ist endgültig unwirksam</li>
+</ul>
+<h3>Ausnahmen bei 7–17 Jahren</h3>
+<p>Hier gilt der Vertrag <b>ohne Zustimmung</b> der Eltern:</p>
+<ul>
+<li><b>Nur rechtlicher Vorteil</b> (§ 107 BGB), z. B. ein Geschenk annehmen</li>
+<li><b>Taschengeldparagraph</b> (§ 110 BGB): Kauf wird <b>sofort komplett bezahlt</b> mit Geld, das man zur freien Verfügung bekommen hat</li>
+<li><b>Arbeitsverhältnis</b>, das die Eltern erlaubt haben (§ 113 BGB): alles, was zu diesem Job gehört (z. B. selbst kündigen)</li>
+</ul>
+<div class="box trap"><b class="lbl">Prüfungsfalle 1: Raten</b>Ratenkauf fällt <b>nicht</b> unter den Taschengeldparagraphen. Der Kauf muss sofort vollständig bezahlt sein.</div>
+<div class="box trap"><b class="lbl">Prüfungsfalle 2: unter 7</b>Auch wenn ein 6-Jähriger nur ein Geschenk annimmt oder mit Taschengeld zahlt: Er ist geschäftsunfähig, seine Erklärung ist <b>nichtig</b>. Die Ausnahmen gelten nur für 7–17.</div>
+<div class="box trap"><b class="lbl">Prüfungsfalle 3: Ausbildung</b>§ 113 gilt <b>nicht</b> für einen Ausbildungsvertrag. Einen Ausbildungsvertrag müssen bei Minderjährigen die Eltern mit unterschreiben.</div>
+<p class="muted">👉 Im Tab <b>Fälle</b> kannst du das an Beispielen üben.</p>`,
+ cards:[
+  ["Geschäftsunfähig: welches Alter, welche Folge?","0–6 Jahre. Verträge sind nichtig."],
+  ["Beschränkt geschäftsfähig: welches Alter, welche Folge?","7–17 Jahre. Verträge sind schwebend unwirksam, bis die Eltern zustimmen."],
+  ["Voll geschäftsfähig ab wann?","Ab 18 Jahren"],
+  ["Was bedeutet „schwebend unwirksam“?","Der Vertrag ist noch nicht gültig. Er wird wirksam, wenn die Eltern genehmigen, und endgültig unwirksam, wenn sie ablehnen."],
+  ["Nenne die 3 Ausnahmen, bei denen 7–17-Jährige ohne Zustimmung Verträge schließen können.","1. nur rechtlicher Vorteil (Geschenk), 2. Taschengeldparagraph § 110, 3. erlaubtes Arbeitsverhältnis § 113"],
+  ["Was regelt § 110 BGB?","Den Taschengeldparagraphen: Kauf ist wirksam, wenn er sofort mit eigenem Taschengeld voll bezahlt wird"],
+  ["Was regelt § 113 BGB?","Minderjährige dürfen alle Geschäfte rund um ein Arbeitsverhältnis selbst machen, das die Eltern erlaubt haben"],
+  ["Gilt der Taschengeldparagraph bei Ratenkauf?","Nein, der Kauf muss sofort komplett bezahlt sein"]
+ ],
+ quiz:[
+  {q:"Ein 5-Jähriger kauft mit seinem Taschengeld ein Eis. Der Vertrag ist …",o:["wirksam (Taschengeldparagraph)","schwebend unwirksam","nichtig"],a:2,w:"Unter 7 ist man geschäftsunfähig. Der Taschengeldparagraph gilt erst ab 7."},
+  {q:"Was bedeutet „beschränkt geschäftsfähig“?",o:["Man darf gar keine Verträge schließen","Verträge brauchen meist die Zustimmung der Eltern","Man darf nur Verträge bis 100 € schließen","Man darf alles außer Immobilien kaufen"],a:1,w:"7–17-Jährige: Verträge sind schwebend unwirksam, bis die Eltern zustimmen (mit Ausnahmen)."},
+  {q:"Welche Ausnahme gilt NICHT für Minderjährige ab 7?",o:["Geschenk annehmen","Taschengeldparagraph","Ratenkauf ohne Zustimmung","Erlaubtes Arbeitsverhältnis"],a:2,w:"Ratenkauf ist kein Fall des § 110. Der Kauf muss sofort vollständig bezahlt sein."},
+  {q:"Ab wann ist man voll geschäftsfähig?",o:["16","17","18","21"],a:2,w:"Mit Vollendung des 18. Lebensjahres."},
+  {q:"Die Eltern verweigern die Genehmigung zu einem schwebend unwirksamen Vertrag. Folge?",o:["Er bleibt schwebend unwirksam","Er ist endgültig unwirksam","Er wird trotzdem wirksam","Er wird mit 18 automatisch wirksam"],a:1,w:"Bei Verweigerung ist der Vertrag endgültig unwirksam."},
+  {q:"Was ist der Taschengeldparagraph?",o:["§ 1 BGB","§ 107 BGB","§ 110 BGB","§ 113 BGB"],a:2,w:"§ 110 BGB."}
+ ]
+}
+];
+
+/* Fälle zur Geschäftsfähigkeit */
+const CASES = [
+ {t:"Mia (6) kauft am Kiosk mit ihrem Taschengeld Sticker für 2 €.",a:2,w:"Mia ist unter 7 und damit geschäftsunfähig. Der Taschengeldparagraph hilft ihr nicht, er gilt erst ab 7. Der Vertrag ist nichtig."},
+ {t:"Tom (15) kauft sich von seinem Taschengeld Kopfhörer für 30 € und zahlt sofort bar. Die Eltern wissen nichts davon.",a:0,w:"Taschengeldparagraph (§ 110): sofort vollständig bezahlt mit Geld zur freien Verfügung. Wirksam."},
+ {t:"Lea (16) kauft ein Handy für 600 € auf Raten. Die Eltern wissen nichts davon.",a:1,w:"Ratenkauf fällt nicht unter § 110, weil nicht sofort voll bezahlt wird. Der Vertrag ist schwebend unwirksam, bis die Eltern zustimmen."},
+ {t:"Ben (12) bekommt von seiner Oma ein Fahrrad geschenkt.",a:0,w:"Ein Geschenk bringt nur einen rechtlichen Vorteil (§ 107). Dafür braucht Ben keine Zustimmung. Wirksam."},
+ {t:"Paul (5) bekommt vom Nachbarn ein Spielzeugauto geschenkt und sagt „Ja, danke, nehme ich!“",a:2,w:"Paul ist geschäftsunfähig. Seine Erklärung ist nichtig, auch wenn es nur ein Vorteil wäre. Die Eltern müssen das Geschenk für ihn annehmen."},
+ {t:"Sara (17) kauft ohne Wissen der Eltern einen Roller für 1.500 €. Die Eltern haben sich noch nicht dazu geäußert.",a:1,w:"Beschränkt geschäftsfähig, keine Ausnahme passt. Bis die Eltern sich äußern, ist der Vertrag schwebend unwirksam."},
+ {t:"Sara (17) aus dem vorigen Fall: Die Eltern sagen „Nein, der Roller geht zurück!“",a:2,w:"Verweigern die Eltern die Genehmigung, ist der Vertrag endgültig unwirksam."},
+ {t:"Jonas (16) jobbt mit Erlaubnis seiner Eltern im Supermarkt. Er kündigt den Job selbst.",a:0,w:"§ 113: Die Eltern haben das Arbeitsverhältnis erlaubt. Jonas darf alle dazugehörigen Geschäfte selbst machen, auch kündigen. Wirksam."},
+ {t:"Emma hatte gestern ihren 18. Geburtstag. Heute schließt sie einen Handyvertrag ab.",a:0,w:"Ab 18 voll geschäftsfähig. Wirksam."},
+ {t:"Lukas (17) unterschreibt allein einen Ausbildungsvertrag als ZFA. Die Eltern haben noch nicht unterschrieben.",a:1,w:"§ 113 gilt nicht für Ausbildungsverträge. Ohne Zustimmung der Eltern ist der Vertrag schwebend unwirksam."},
+ {t:"Finn (14) hat sein Taschengeld monatelang gespart und kauft davon eine Spielkonsole für 300 €, bar bezahlt.",a:0,w:"Auch angespartes Taschengeld zählt (wenn die Eltern es zur freien Verfügung gegeben haben). Sofort voll bezahlt, also § 110. Wirksam."},
+ {t:"Nele (8) kauft mit ihrem Taschengeld ein Comicheft für 4 € und bezahlt sofort.",a:0,w:"Nele ist 8, also beschränkt geschäftsfähig. Taschengeldparagraph greift. Wirksam."}
+];
+const CASE_OPTS = ["✅ wirksam","⏳ schwebend unwirksam","❌ nichtig / unwirksam"];
+
+/* Beispielwerte für den Rechentrainer (Arbeitnehmeranteile) */
+const RATES = {kv:8.75, rv:9.3, av:1.3, pv:1.8, pvZ:0.6, kist:9};
+
+/* ============ ZUSTAND ============ */
+const store = {
+ get(k,d){try{const v=localStorage.getItem("zfaWi_"+k);return v?JSON.parse(v):d}catch(e){return d}},
+ set(k,v){try{localStorage.setItem("zfaWi_"+k,JSON.stringify(v))}catch(e){}}
+};
+let S = {
+ tab:"lernen", topic:null,
+ read: store.get("read",{}),          // gelesene Themen
+ known: store.get("known",{}),        // Karten gewusst
+ best: store.get("best",{}),          // Quiz-Bestwerte
+ cardFilter:"alle", quizFilter:"alle"
+};
+const save=()=>{store.set("read",S.read);store.set("known",S.known);store.set("best",S.best)};
+const $ = s=>document.querySelector(s);
+const app = $("#app");
+const shuffle = a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const eur = n=>n.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+const r2 = n=>Math.round(n*100)/100;
+
+function topicProgress(t){
+ const keys=t.cards.map((_,i)=>t.id+"_"+i);
+ const k=keys.filter(x=>S.known[x]).length/keys.length;
+ const q=S.best[t.id]? S.best[t.id]/t.quiz.length : 0;
+ const r=S.read[t.id]?1:0;
+ return Math.round((r*0.2+k*0.4+q*0.4)*100);
+}
+
+/* ============ TABS ============ */
+const TABS=[["lernen","📖","Lernen"],["karten","🃏","Karten"],["quiz","❓","Quiz"],["faelle","⚖️","Fälle"],["rechnen","🧮","Rechnen"]];
+function renderTabs(){
+ $("#tabs").innerHTML=TABS.map(([id,i,l])=>`<button class="${S.tab===id?"on":""}" data-tab="${id}"><span class="i">${i}</span>${l}</button>`).join("");
+ document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.topic=null;render();scrollTo(0,0)});
+}
+function render(){
+ renderTabs();
+ ({lernen:viewLernen,karten:viewKarten,quiz:viewQuiz,faelle:viewFaelle,rechnen:viewRechnen})[S.tab]();
+}
+
+/* ============ LERNEN ============ */
+function viewLernen(){
+ if(S.topic){
+  const t=TOPICS.find(x=>x.id===S.topic);
+  S.read[t.id]=true;save();
+  app.innerHTML=`<div class="fade"><button class="back" id="bk">← Alle Themen</button>
+  <div class="card lesson">${t.learn}</div>
+  <div class="row"><button class="btn alt" id="toCards">🃏 Karten</button><button class="btn" id="toQuiz">❓ Quiz dazu</button></div></div>`;
+  $("#bk").onclick=()=>{S.topic=null;render();scrollTo(0,0)};
+  $("#toCards").onclick=()=>{S.tab="karten";S.cardFilter=t.id;S.topic=null;render();scrollTo(0,0)};
+  $("#toQuiz").onclick=()=>{S.tab="quiz";S.topic=null;startQuiz(t.id)};
+  return;
+ }
+ const total=Math.round(TOPICS.reduce((s,t)=>s+topicProgress(t),0)/TOPICS.length);
+ const known=Object.values(S.known).filter(Boolean).length;
+ const allCards=TOPICS.reduce((s,t)=>s+t.cards.length,0);
+ app.innerHTML=`<div class="fade">
+ <header class="top"><div><span class="pill">ZFA · Wirtschaft</span><h1 style="margin-top:8px">Hey Lina! 👋</h1><div class="sub">Alle Prüfungsthemen, Schritt für Schritt.</div></div></header>
+ <div class="stats">
+  <div class="stat"><b>${total}%</b><span>Fortschritt</span></div>
+  <div class="stat"><b>${known}/${allCards}</b><span>Karten gewusst</span></div>
+  <div class="stat"><b>${Object.keys(S.read).length}/${TOPICS.length}</b><span>Themen gelesen</span></div>
+ </div>
+ ${TOPICS.map(t=>{const p=topicProgress(t);return `<div class="card"><button class="topic" data-t="${t.id}">
+  <span class="ico">${t.ico}</span><span style="flex:1"><span class="t">${t.title}</span><br><span class="s">${t.sub}</span><div class="bar"><i style="width:${p}%"></i></div></span><span class="arrow">›</span></button></div>`}).join("")}
+ <p class="muted" style="font-size:.85rem;text-align:center">Tipp: Erst lesen, dann Karten, dann Quiz. Dein Fortschritt bleibt auf diesem Gerät gespeichert.</p>
+ </div>`;
+ document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{S.topic=b.dataset.t;render();scrollTo(0,0)});
+}
+
+/* ============ KARTEN ============ */
+let deck=[],di=0,onlyUnknown=false;
+function buildDeck(){
+ let all=[];TOPICS.forEach(t=>{if(S.cardFilter==="alle"||S.cardFilter===t.id)t.cards.forEach((c,i)=>all.push({id:t.id+"_"+i,q:c[0],a:c[1],topic:t.title,ico:t.ico}))});
+ if(onlyUnknown)all=all.filter(c=>!S.known[c.id]);
+ deck=shuffle(all);di=0;
+}
+function chipsHTML(sel,attr){
+ return `<div class="chips"><button class="chip ${sel==="alle"?"on":""}" ${attr}="alle">Alle</button>${TOPICS.map(t=>`<button class="chip ${sel===t.id?"on":""}" ${attr}="${t.id}">${t.ico} ${t.title}</button>`).join("")}</div>`;
+}
+function viewKarten(){
+ buildDeck();drawCard();
+}
+function drawCard(){
+ const c=deck[di];
+ let body;
+ if(!deck.length){
+  body=`<div class="card" style="text-align:center"><div class="big">🎉</div><p>Keine offenen Karten mehr in diesem Bereich.</p><button class="btn" id="resetUnknown">Alle Karten anzeigen</button></div>`;
+ } else if(di>=deck.length){
+  body=`<div class="card" style="text-align:center"><div class="big">✔️</div><p>Stapel durch! Nochmal mischen?</p><button class="btn full" id="again">Neu mischen</button></div>`;
+ } else {
+  body=`<div class="qhead"><span>${c.ico} ${c.topic}</span><span>${di+1} / ${deck.length}</span></div>
+  <div class="flip" id="flip"><div class="inner">
+   <div class="face"><span class="tag">Frage</span><div class="q">${c.q}</div><span class="hint">Tippen zum Umdrehen</span></div>
+   <div class="face backside"><span class="tag">Antwort</span><div class="a">${c.a}</div></div>
+  </div></div>
+  <div class="row"><button class="btn coral" id="no">🔁 Nochmal</button><button class="btn" id="yes">✓ Gewusst</button></div>`;
+ }
+ app.innerHTML=`<div class="fade"><h2>🃏 Karteikarten</h2>${chipsHTML(S.cardFilter,"data-cf")}
+ <label style="display:flex;gap:8px;align-items:center;margin-bottom:14px;font-size:.9rem"><input type="checkbox" id="ou" ${onlyUnknown?"checked":""}> Nur Karten, die ich noch nicht kann</label>
+ ${body}</div>`;
+ document.querySelectorAll("[data-cf]").forEach(b=>b.onclick=()=>{S.cardFilter=b.dataset.cf;viewKarten()});
+ $("#ou").onchange=e=>{onlyUnknown=e.target.checked;viewKarten()};
+ if($("#flip"))$("#flip").onclick=()=>$("#flip").classList.toggle("turned");
+ if($("#yes"))$("#yes").onclick=()=>{S.known[c.id]=true;save();di++;drawCard()};
+ if($("#no"))$("#no").onclick=()=>{S.known[c.id]=false;save();deck.push(c);di++;drawCard()};
+ if($("#again"))$("#again").onclick=viewKarten;
+ if($("#resetUnknown"))$("#resetUnknown").onclick=()=>{onlyUnknown=false;viewKarten()};
+}
+
+/* ============ QUIZ ============ */
+let Q=null;
+function startQuiz(filter){
+ S.quizFilter=filter;
+ let qs=[];TOPICS.forEach(t=>{if(filter==="alle"||filter===t.id)t.quiz.forEach(q=>qs.push({...q,tid:t.id,ico:t.ico,topic:t.title}))});
+ qs=shuffle(qs);if(filter==="alle")qs=qs.slice(0,15);
+ Q={qs,i:0,score:0,answered:false,wrong:[]};
+ render();scrollTo(0,0);
+}
+function viewQuiz(){
+ if(!Q){
+  app.innerHTML=`<div class="fade"><h2>❓ Quiz</h2><p class="muted">Wähle ein Thema oder mach den gemischten Prüfungsmodus (15 zufällige Fragen).</p>
+  <div class="card"><button class="topic" data-q="alle"><span class="ico" style="background:var(--gold-soft)">🎯</span><span style="flex:1"><span class="t">Prüfungsmodus</span><br><span class="s">15 gemischte Fragen aus allen Themen</span></span><span class="arrow">›</span></button></div>
+  ${TOPICS.map(t=>`<div class="card"><button class="topic" data-q="${t.id}"><span class="ico">${t.ico}</span><span style="flex:1"><span class="t">${t.title}</span><br><span class="s">${t.quiz.length} Fragen${S.best[t.id]!=null?` · Bestwert ${S.best[t.id]}/${t.quiz.length}`:""}</span></span><span class="arrow">›</span></button></div>`).join("")}</div>`;
+  document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>startQuiz(b.dataset.q));
+  return;
+ }
+ if(Q.i>=Q.qs.length){
+  const n=Q.qs.length,p=Math.round(Q.score/n*100);
+  if(S.quizFilter!=="alle"){S.best[S.quizFilter]=Math.max(S.best[S.quizFilter]||0,Q.score);save()}
+  const msg=p>=90?"Hervorragend! Das sitzt. 🌟":p>=70?"Gut gemacht! Fast alles drin. 💪":p>=50?"Solide Basis. Schau dir die Fehler nochmal an. 📖":"Lies das Thema nochmal in Ruhe, dann klappt's. 🙂";
+  app.innerHTML=`<div class="fade"><div class="card" style="text-align:center"><h2>Ergebnis</h2><div class="big">${Q.score}/${n}</div><p>${msg}</p></div>
+  ${Q.wrong.length?`<h3>Das solltest du wiederholen:</h3>${Q.wrong.map(w=>`<div class="card"><b>${w.q}</b><div class="explain ok" style="margin-top:8px">✓ ${w.o[w.a]}<br><span class="muted">${w.w}</span></div></div>`).join("")}`:""}
+  <div class="row"><button class="btn alt" id="qback">Übersicht</button><button class="btn" id="qagain">Nochmal</button></div></div>`;
+  $("#qback").onclick=()=>{Q=null;render()};
+  $("#qagain").onclick=()=>startQuiz(S.quizFilter);
+  return;
+ }
+ const q=Q.qs[Q.i];
+ app.innerHTML=`<div class="fade"><button class="back" id="qx">← Quiz beenden</button>
+ <div class="qhead"><span>${q.ico} ${q.topic}</span><span>Frage ${Q.i+1}/${Q.qs.length} · ${Q.score} ✓</span></div>
+ <div class="bar" style="margin-bottom:16px"><i style="width:${Q.i/Q.qs.length*100}%"></i></div>
+ <div class="qtext">${q.q}</div>
+ ${q.o.map((o,i)=>`<button class="opt" data-o="${i}">${o}</button>`).join("")}
+ <div id="ex"></div></div>`;
+ $("#qx").onclick=()=>{Q=null;render()};
+ document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{
+  const i=+b.dataset.o,ok=i===q.a;
+  document.querySelectorAll("[data-o]").forEach(x=>{x.disabled=true;if(+x.dataset.o===q.a)x.classList.add("right")});
+  if(!ok){b.classList.add("wrong");Q.wrong.push(q)}else Q.score++;
+  $("#ex").innerHTML=`<div class="explain ${ok?"ok":"no"}"><b>${ok?"Richtig!":"Nicht ganz."}</b> ${q.w}</div><button class="btn full" id="nx">${Q.i+1<Q.qs.length?"Weiter →":"Ergebnis anzeigen"}</button>`;
+  $("#nx").onclick=()=>{Q.i++;render();scrollTo(0,0)};
+ });
+}
+
+/* ============ FÄLLE ============ */
+let F=null;
+function viewFaelle(){
+ if(!F)F={cs:shuffle(CASES),i:0,score:0};
+ if(F.i>=F.cs.length){
+  app.innerHTML=`<div class="fade"><div class="card" style="text-align:center"><h2>Alle Fälle gelöst</h2><div class="big">${F.score}/${F.cs.length}</div><p>${F.score>=F.cs.length-1?"Geschäftsfähigkeit sitzt! 🎉":"Schau dir die Prüfungsfallen im Thema Geschäftsfähigkeit nochmal an."}</p><button class="btn full" id="fa">Nochmal (neu gemischt)</button></div></div>`;
+  $("#fa").onclick=()=>{F=null;render()};
+  return;
+ }
+ const c=F.cs[F.i];
+ app.innerHTML=`<div class="fade"><h2>⚖️ Fälle: Geschäftsfähigkeit</h2>
+ <p class="muted" style="font-size:.9rem">Lies den Fall und entscheide: Ist der Vertrag wirksam?</p>
+ <div class="qhead"><span>Fall ${F.i+1}/${F.cs.length}</span><span>${F.score} ✓</span></div>
+ <div class="card"><div class="qtext" style="margin:0">${c.t}</div></div>
+ ${CASE_OPTS.map((o,i)=>`<button class="opt" data-c="${i}">${o}</button>`).join("")}
+ <div id="cex"></div>
+ <div class="box tip" style="margin-top:18px"><b class="lbl">Prüfschema</b>1. Wie alt? → 2. Unter 7: nichtig. Ab 18: wirksam. → 3. 7–17: Passt eine Ausnahme (Geschenk, Taschengeld voll bezahlt, erlaubter Job)? Ja: wirksam. Nein: Haben die Eltern entschieden?</div></div>`;
+ document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+  const i=+b.dataset.c,ok=i===c.a;
+  document.querySelectorAll("[data-c]").forEach(x=>{x.disabled=true;if(+x.dataset.c===c.a)x.classList.add("right")});
+  if(!ok)b.classList.add("wrong");else F.score++;
+  $("#cex").innerHTML=`<div class="explain ${ok?"ok":"no"}"><b>${ok?"Richtig!":"Nicht ganz."}</b> ${c.w}</div><button class="btn full" id="cn">Nächster Fall →</button>`;
+  $("#cn").onclick=()=>{F.i++;render();scrollTo(0,0)};
+ });
+}
+
+/* ============ RECHNEN ============ */
+let R=null;
+function newCalc(){
+ const brutto=[950,1050,1200,1850,2100,2400,2650,2900,3200][Math.floor(Math.random()*9)];
+ const lst = brutto<1300?0:r2(Math.round((brutto-1250)*0.155));  // vorgegebener Wert für die Aufgabe
+ const kirche=Math.random()<0.5;
+ const alter=[19,21,24,27][Math.floor(Math.random()*4)];
+ const kinderlos=alter>=23&&Math.random()<0.75;
+ const vl=Math.random()<0.4?40:0;
+ R={brutto,lst,kirche,alter,kinderlos,vl,shown:false,res:null};
+}
+function calcResult(){
+ const b=R.brutto;
+ const kist=R.kirche?r2(R.lst*RATES.kist/100):0;
+ const kv=r2(b*RATES.kv/100),rv=r2(b*RATES.rv/100),av=r2(b*RATES.av/100);
+ const pv=r2(b*(RATES.pv+(R.kinderlos?RATES.pvZ:0))/100);
+ const steuer=r2(R.lst+kist),sv=r2(kv+rv+av+pv);
+ const netto=r2(b-steuer-sv),aus=r2(netto-R.vl);
+ return {kist,kv,rv,av,pv,steuer,sv,netto,aus};
+}
+function viewRechnen(){
+ if(!R)newCalc();
+ const x=calcResult();
+ const ask=R.vl?"Auszahlungsbetrag":"Nettogehalt";
+ const target=R.vl?x.aus:x.netto;
+ app.innerHTML=`<div class="fade"><h2>🧮 Rechentrainer</h2>
+ <div class="box trap"><b class="lbl">Achtung</b>Die Prozentsätze hier sind <b>Beispielwerte</b> zum Üben. In der Prüfung immer die Sätze aus der Aufgabe bzw. deinen Unterlagen nehmen!</div>
+ <div class="card">
+  <h3 style="font-family:Outfit;font-weight:700">Aufgabe</h3>
+  <p>Eine ZFA verdient <b>${eur(R.brutto)}</b> brutto im Monat. Sie ist <b>${R.alter} Jahre</b> alt, ${R.kinderlos?"<b>kinderlos</b>":(R.alter>=23?"hat <b>ein Kind</b>":"hat keine Kinder")} und ${R.kirche?"ist <b>Mitglied der Kirche</b>":"ist <b>nicht</b> in der Kirche"}.${R.vl?` Sie spart <b>${eur(R.vl)}</b> VL im Monat.`:""}</p>
+  <table>
+   <tr><td>Lohnsteuer (laut Tabelle)</td><td><b>${eur(R.lst)}</b></td></tr>
+   <tr><td>Kirchensteuer</td><td>${RATES.kist} % der Lohnsteuer</td></tr>
+   <tr><td>Soli</td><td>entfällt</td></tr>
+   <tr><td>KV (AN-Anteil inkl. Zusatzbeitrag)</td><td>${RATES.kv.toString().replace(".",",")} %</td></tr>
+   <tr><td>RV (AN-Anteil)</td><td>${RATES.rv.toString().replace(".",",")} %</td></tr>
+   <tr><td>AV (AN-Anteil)</td><td>${RATES.av.toString().replace(".",",")} %</td></tr>
+   <tr><td>PV (AN-Anteil)</td><td>${RATES.pv.toString().replace(".",",")} % (+ ${RATES.pvZ.toString().replace(".",",")} % Zuschlag für Kinderlose ab 23)</td></tr>
+  </table>
+  <label class="lbl" for="inp">Berechne das ${ask}:</label>
+  <input class="num" id="inp" inputmode="decimal" placeholder="z. B. 1234,56">
+  <div id="fb" style="margin-top:12px"></div>
+  <div class="row" style="margin-top:6px"><button class="btn alt" id="sol">Lösung zeigen</button><button class="btn" id="chk">Prüfen</button></div>
+ </div>
+ <div id="steps"></div>
+ <button class="btn full alt" id="nw" style="margin-top:4px">🔄 Neue Aufgabe</button>
+ </div>`;
+ const showSteps=()=>{
+  $("#steps").innerHTML=`<div class="card fade"><h3 style="font-family:Outfit;font-weight:700">Lösungsweg</h3>
+  <div class="calc-line"><span>Brutto</span><span>${eur(R.brutto)}</span></div>
+  <div class="calc-line"><span>− Lohnsteuer</span><span>${eur(R.lst)}</span></div>
+  <div class="calc-line"><span>− Kirchensteuer ${R.kirche?`(${RATES.kist} % von ${eur(R.lst)})`:"(nicht in der Kirche)"}</span><span>${eur(x.kist)}</span></div>
+  <div class="calc-line"><span>− KV (${RATES.kv} % von Brutto)</span><span>${eur(x.kv)}</span></div>
+  <div class="calc-line"><span>− RV (${RATES.rv} %)</span><span>${eur(x.rv)}</span></div>
+  <div class="calc-line"><span>− AV (${RATES.av} %)</span><span>${eur(x.av)}</span></div>
+  <div class="calc-line"><span>− PV (${R.kinderlos?`${RATES.pv} % + ${RATES.pvZ} % Zuschlag`:`${RATES.pv} %`})</span><span>${eur(x.pv)}</span></div>
+  <div class="calc-line sum"><span>= Netto</span><span>${eur(x.netto)}</span></div>
+  ${R.vl?`<div class="calc-line"><span>− VL</span><span>${eur(R.vl)}</span></div><div class="calc-line sum"><span>= Auszahlungsbetrag</span><span>${eur(x.aus)}</span></div>`:""}
+  <p class="muted" style="font-size:.85rem;margin-top:10px">Steuern gesamt: ${eur(x.steuer)} · SV gesamt: ${eur(x.sv)}${R.alter<23?" · Unter 23 gibt es keinen Kinderlosenzuschlag.":""}</p></div>`;
+ };
+ $("#chk").onclick=()=>{
+  const v=parseFloat(($("#inp").value||"").replace(/\./g,"").replace(",",".").replace(/[^\d.-]/g,""));
+  if(isNaN(v)){$("#fb").innerHTML=`<div class="explain no">Bitte eine Zahl eingeben.</div>`;return}
+  const ok=Math.abs(v-target)<=0.05;
+  $("#fb").innerHTML=ok?`<div class="explain ok"><b>Richtig!</b> ${eur(target)} 🎉</div>`:`<div class="explain no"><b>Noch nicht.</b> Prüf nochmal: Kirchensteuer von der Lohnsteuer, Pflege-Zuschlag nur kinderlos ab 23${R.vl?", VL erst nach dem Netto abziehen":""}.</div>`;
+  if(ok)showSteps();
+ };
+ $("#sol").onclick=showSteps;
+ $("#nw").onclick=()=>{newCalc();render();scrollTo(0,0)};
+}
+
+render();
+</script>
+</body>
+</html>
