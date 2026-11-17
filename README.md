@@ -1,6 +1,9 @@
 # ZFA Lern-App 🦷
 
-Lern-App für die ZFA-Ausbildung. Der erste Teil deckt die Prüfungsthemen in **Wirtschaft** ab.
+Lern-App für die ZFA-Ausbildung. Zwei Teile:
+
+- `index.html`: Prüfungsthemen **Wirtschaft**
+- `lf2-5.html`: **Fachkunde-Quiz Lernfeld 2 bis 5** (Patienten empfangen, Praxishygiene, Kariestherapie, Endodontie) mit 94 Quizfragen, Kompaktwissen, „5 am Tag“ und „Fehler üben“
 
 ## Was drin ist
 
@@ -31,7 +34,9 @@ Die Prozentsätze im Rechentrainer sind **Beispielwerte**. In der Prüfung immer
 
 ## Inhalte ändern oder ergänzen
 
-Alle Lerninhalte stehen in `index.html` im `<script>`-Teil:
+Die Fachkunde-Fragen stehen in `lf2-5.html` in `DATA` (pro Lernfeld `kompakt` und `fragen`: Frage, richtige Antwort, falsche Antworten, Erklärung).
+
+Die Wirtschafts-Inhalte stehen in `index.html` im `<script>`-Teil:
 
 - `TOPICS`: Themen mit Lerntext (`learn`), Karteikarten (`cards`) und Quizfragen (`quiz`)
 - `CASES`: Fälle zur Geschäftsfähigkeit
