@@ -27,9 +27,10 @@ Der Lernfortschritt wird im Browser auf dem jeweiligen Gerät gespeichert.
 
 ### Als Webseite fürs Handy (GitHub Pages)
 
-1. Im Repo auf **Settings → Pages**
-2. Bei *Source*: **Deploy from a branch**, Branch **main**, Ordner **/ (root)**, speichern
-3. Nach ca. 1 Minute ist die App unter `https://linaalp.github.io/zfa-lern-app/` erreichbar
+Die App wird automatisch veröffentlicht (Datei `.github/workflows/pages.yml`), sobald sich etwas auf `main` ändert.
+Einstellung dafür: **Settings → Pages → Source: GitHub Actions**.
+
+Adresse: `https://linaalp.github.io/ZFA-lern-app/`
 
 ## Wichtig
 
