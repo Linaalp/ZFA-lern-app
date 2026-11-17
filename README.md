@@ -3,7 +3,10 @@
 Lern-App für die ZFA-Ausbildung. Zwei Teile:
 
 - `index.html`: Prüfungsthemen **Wirtschaft**
-- `lf2-5.html`: **Fachkunde-Quiz Lernfeld 2 bis 5** (Patienten empfangen, Praxishygiene, Kariestherapie, Endodontie) mit 94 Quizfragen, Kompaktwissen, „5 am Tag“ und „Fehler üben“
+- `patienten.html`: Quiz **Patienten betreuen** (LF 2 Patienten empfangen, LF 3 Praxishygiene), 41 Fragen
+- `kariestherapie.html`: Quiz **Karies- & Füllungstherapie** (LF 4 Kariestherapie, LF 5 Endodontie), 53 Fragen
+
+Beide Quiz-Apps haben Kompaktwissen, „5 am Tag“, „Fehler üben“ und einen eigenen Fortschritt.
 
 ## Was drin ist
 
@@ -34,7 +37,7 @@ Die Prozentsätze im Rechentrainer sind **Beispielwerte**. In der Prüfung immer
 
 ## Inhalte ändern oder ergänzen
 
-Die Fachkunde-Fragen stehen in `lf2-5.html` in `DATA` (pro Lernfeld `kompakt` und `fragen`: Frage, richtige Antwort, falsche Antworten, Erklärung).
+Die Fachkunde-Fragen stehen in `patienten.html` bzw. `kariestherapie.html` in `DATA` (pro Lernfeld `kompakt` und `fragen`: Frage, richtige Antwort, falsche Antworten, Erklärung).
 
 Die Wirtschafts-Inhalte stehen in `index.html` im `<script>`-Teil:
 

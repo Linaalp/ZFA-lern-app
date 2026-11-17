@@ -4,7 +4,7 @@ Lern-App für Lina (Ausbildung Zahnmedizinische Fachangestellte). Lina ist keine
 
 ## Aufbau
 
-- `index.html` (Wirtschaft) und `lf2-5.html` (Fachkunde-Quiz LF 2 bis 5), jeweils eine eigenständige Datei (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt. Beide verlinken aufeinander.
+- `index.html` (Startseite + Wirtschaft), `patienten.html` (LF 2 + 3) und `kariestherapie.html` (LF 4 + 5), jeweils eine eigenständige Datei (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt. Alle verlinken aufeinander.
 - Muss per Doppelklick und über GitHub Pages laufen. Kein Framework einführen, ohne zu fragen.
 - Mobile-first: Lina lernt hauptsächlich am Handy.
 - Inhalte liegen als Daten im Script: `TOPICS` (learn/cards/quiz), `CASES`, `RATES`. Neue Themen dort ergänzen, die Views bauen sich daraus.
