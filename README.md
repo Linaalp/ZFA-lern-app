@@ -1,6 +1,12 @@
 # ZFA Lern-App 🦷
 
-Lern-App für die ZFA-Ausbildung. Der erste Teil deckt die Prüfungsthemen in **Wirtschaft** ab.
+Lern-App für die ZFA-Ausbildung. Zwei Teile:
+
+- `index.html`: Prüfungsthemen **Wirtschaft**
+- `patienten.html`: Quiz **Patienten betreuen** (LF 2 Patienten empfangen, LF 3 Praxishygiene), 41 Fragen
+- `kariestherapie.html`: Quiz **Karies- & Füllungstherapie** (LF 4 Kariestherapie, LF 5 Endodontie), 53 Fragen
+
+Beide Quiz-Apps haben Kompaktwissen, „5 am Tag“, „Fehler üben“ und einen eigenen Fortschritt.
 
 ## Was drin ist
 
@@ -31,7 +37,9 @@ Die Prozentsätze im Rechentrainer sind **Beispielwerte**. In der Prüfung immer
 
 ## Inhalte ändern oder ergänzen
 
-Alle Lerninhalte stehen in `index.html` im `<script>`-Teil:
+Die Fachkunde-Fragen stehen in `patienten.html` bzw. `kariestherapie.html` in `DATA` (pro Lernfeld `kompakt` und `fragen`: Frage, richtige Antwort, falsche Antworten, Erklärung).
+
+Die Wirtschafts-Inhalte stehen in `index.html` im `<script>`-Teil:
 
 - `TOPICS`: Themen mit Lerntext (`learn`), Karteikarten (`cards`) und Quizfragen (`quiz`)
 - `CASES`: Fälle zur Geschäftsfähigkeit

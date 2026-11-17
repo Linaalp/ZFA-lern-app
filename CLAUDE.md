@@ -4,11 +4,11 @@ Lern-App für Lina (Ausbildung Zahnmedizinische Fachangestellte). Lina ist keine
 
 ## Aufbau
 
-- Eine einzige Datei `index.html` (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt.
+- `index.html` (Startseite + Wirtschaft), `patienten.html` (LF 2 + 3) und `kariestherapie.html` (LF 4 + 5), jeweils eine eigenständige Datei (HTML, CSS, JS inline), keine Abhängigkeiten außer Google Fonts, kein Build-Schritt. Alle verlinken aufeinander.
 - Muss per Doppelklick und über GitHub Pages laufen. Kein Framework einführen, ohne zu fragen.
 - Mobile-first: Lina lernt hauptsächlich am Handy.
 - Inhalte liegen als Daten im Script: `TOPICS` (learn/cards/quiz), `CASES`, `RATES`. Neue Themen dort ergänzen, die Views bauen sich daraus.
-- Fortschritt in `localStorage` (Präfix `zfaWi_`), immer in try/catch.
+- Fortschritt in `localStorage` (Präfix `zfaWi_` bzw. `zfaLF_`), immer in try/catch.
 
 ## Inhaltliche Regeln
 
